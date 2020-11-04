@@ -1,2 +1,2 @@
-# k8s-msa-in-action
-课程《Kubernetes微服务实践》源码
+# k8s 时间配置文件
+
