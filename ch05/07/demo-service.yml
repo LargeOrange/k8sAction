@@ -4,14 +4,14 @@ metadata:
   name: docker-demo
 spec:
   ports:
-#    - name: http
-#      port: 3000
-#      targetPort: 3000
-#      nodePort: 31080
-  - protocol: "TCP"
+  - name: http
     port: 3000
     targetPort: 3000
-  type: LoadBalancer
+    nodePort: 31080
+#  - protocol: "TCP"
+#    port: 3000
+#    targetPort: 3000
+#  type: LoadBalancer
   selector:
     app: docker-demo
-#  type: NodePort
+  type: NodePort
