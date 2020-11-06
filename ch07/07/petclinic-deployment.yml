@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: petclinic
-  minReadySeconds: 10
+  minReadySeconds: 06configMap
   replicas: 3
   template:
     metadata:
