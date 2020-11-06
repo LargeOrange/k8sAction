@@ -45,6 +45,7 @@ K8s集群中的计算能力由Node提供，最初Node称为服务节点Minion，
 
 * 系统：mac os
 * docker: 19.03.13
+    * [mac docker 启动k8s一直starting解决](https://github.com/AliyunContainerService/k8s-for-docker-desktop)
 * docker image
     * 实现了输出hello world
     * 实现接口/panic 非正常终止
@@ -65,6 +66,7 @@ kubectl version --client
 ```
 
 [其他的安装方式](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+
 
 ### minikube 安装
 这里我们安装阿里云的版本
@@ -195,6 +197,7 @@ spec:
             fieldPath: status.podIP
 
 ```
+在pod里面打上了label，写入了一些环境变量后面有用
 svc的yml
 ```
 apiVersion: v1
@@ -211,4 +214,39 @@ spec:
     app: docker-demo #Label selector
   type: NodePort
 
+```
+svc的配置通过selector对pod进行绑定，类型是nodePort，暴露的端口是31080
+进行部署
+```
+✗ kubectl apply -f .
+✗ kubectl get all
+NAME              READY   STATUS              RESTARTS   AGE
+pod/docker-demo   0/1     ContainerCreating   0          7s
+
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/docker-demo   NodePort    10.106.221.48   <none>        3000:31080/TCP   7s
+service/kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP          2d21h
+#此时svc已经创建好了，但是pod还没有running
+✗ kubectl get all
+NAME              READY   STATUS    RESTARTS   AGE
+pod/docker-demo   1/1     Running   0          30m
+
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+service/docker-demo   NodePort    10.106.221.48   <none>        3000:31080/TCP   30m
+service/kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP          2d21h
+✗ curl 127.0.0.1:31080
+Hello World!%
+#此时pod已经运行，我们访问31080端口，输出了Hello World! 部署成功了
+```
+
+#### 通过svc实现蓝绿发布
+
+### svc部署多个结点
+
+#### 环境准备
+
+我们现在模拟多个结点的负载均衡，在k8s中node才是对应物理机或者虚拟机的对象，所以我们要部署三个minikube结点，我们先清理之前的minikube环境，在之前的部署命令中增加`--node=3`
+
+```
+minikube start --cpus=2 --memory=2048mb --registry-mirror=https://t65rjofu.mirror.aliyuncs.com --driver=virtualbox --nodes=3
 ```
