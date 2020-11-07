@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: demo-config-v2
-data:
-  DATASOURCE_USERNAME: chengliuxiang_v1
-  DATASOURCE_PASSWORD: chengliuxiang_v2

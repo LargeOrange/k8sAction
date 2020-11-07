@@ -8,10 +8,7 @@ spec:
       port: 3000
       targetPort: 3000
       nodePort: 31080
-  #  - protocol: "TCP"
-  #    port: 3000
-  #    targetPort: 3000
-  #  type: LoadBalancer
   selector:
     app: docker-demo
+    version: v1.0.1
   type: NodePort

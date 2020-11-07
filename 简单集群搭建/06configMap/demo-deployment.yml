@@ -1,12 +1,18 @@
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: Deployment
 metadata:
   name: docker-demo
 spec:
-  replicas: 3
   selector:
     matchLabels:
       app: docker-demo
+  minReadySeconds: 06
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1 #
+      maxSurge: 2 #升级过程中可以比预设的 pod 的数量多出的个数，默认值是25%
+  replicas: 3
   template:
     metadata:
       labels:
@@ -15,6 +21,9 @@ spec:
       containers:
         - name: docker-demo
           image: sundacheng/docker_demo:v1.0.1
+          envFrom:
+            - configMapRef:
+                name: docker-config-v2
           env:
             - name: MY_NODE_NAME
               valueFrom:
